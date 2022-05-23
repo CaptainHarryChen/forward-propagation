@@ -41,7 +41,6 @@ class Model():
 
     def __call__(self, *argv, **kwargv):
         if self.mode == "train":
-            self.zero_grads()
             for i in range(self.propagation_time):
                 self.reset_param()
                 res = self.loss(*argv, **kwargv)

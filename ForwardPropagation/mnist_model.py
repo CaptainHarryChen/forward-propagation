@@ -1,32 +1,34 @@
-import torch
 import random
 import time
 import numpy as np
-import torch.nn as nn
-import torch.nn.functional as F
 import matplotlib.pyplot as plt
+import ForwardModel
+import Layer
+import Function as F
+from ForwardTensor import FTensor
+from Optimizer import SGD, Adam
 import mnist_loader
 
 
-class MNIST_model(nn.Module):
+class MNIST_model(ForwardModel.Model):
     def __init__(self, hidden1, hidden2):
         super().__init__()
-        self.linear1 = nn.Linear(784, hidden1)
-        self.linear2 = nn.Linear(hidden1, hidden2)
-        self.linear3 = nn.Linear(hidden2, 10)
+        self.linear1 = Layer.Linear(784, hidden1, self, "linear1")
+        self.linear2 = Layer.Linear(hidden1, hidden2, self, "linear2")
+        self.linear3 = Layer.Linear(hidden2, 10, self, "linear3")
 
     def forward(self, x):
         a1 = F.relu(self.linear1(x))
         a2 = F.relu(self.linear2(a1))
         a3 = self.linear3(a2)
-        y = F.softmax(a3, dim=1)
+        y = F.softmax(a3, axis=-1)
         return y
 
-    def loss(self, a, Y):
-        return F.binary_cross_entropy(a, Y)
+    def loss(self, x, Y):
+        return F.cross_entropy(self.forward(x), Y)
 
     def correct(self, a, Y):
-        return Y[torch.argmax(a)]==1
+        return Y[np.argmax(a)] == 1
 
 
 images, labels = mnist_loader.load_data(".\\MNIST", "train")
@@ -35,8 +37,8 @@ images, labels = mnist_loader.load_data(".\\MNIST", "t10k")
 test_dataX, test_dataY = mnist_loader.standardize(images, labels)
 
 
-total_epochs = 50
-propagation_times = 10
+total_epochs = 5
+propagation_times = 1
 lr = 0.01
 mini_batch_size = 32
 
@@ -44,7 +46,7 @@ model = MNIST_model(hidden1=128, hidden2=128)
 
 epoch_idx = np.arange(1, total_epochs+1)
 losses = np.zeros(total_epochs, dtype=np.float32)
-opti = torch.optim.Adam(model.parameters(), lr=lr)
+opti = Adam(lr=lr)
 
 time_st = time.time()
 
@@ -54,18 +56,16 @@ for epoch in range(total_epochs):
     np.random.shuffle(idx)
     sum_loss = 0.0
     n = len(train_dataX)
-    opti.zero_grad()
+
+    model.zero_grads()
     for j in range(0, n, mini_batch_size):
-        dataX = torch.tensor(
-            train_dataX[idx[j:j + mini_batch_size]], dtype=torch.float)
-        dataY = torch.tensor(
-            train_dataY[idx[j:j + mini_batch_size]], dtype=torch.float)
-        pred = model(dataX)
-        loss = model.loss(pred, dataY)
+        dataX = train_dataX[idx[j:j + mini_batch_size]]
+        dataY = train_dataY[idx[j:j + mini_batch_size]]
+        loss = model(dataX, dataY)
         sum_loss += loss
-        loss.backward()
         # print(f"loss: {loss}")
-    opti.step()
+    opti.update(model.variables, model.grads)
+
     average_loss = sum_loss / (n//mini_batch_size)
     losses[epoch] = average_loss
     print(f"Epoch {epoch} :")
@@ -82,9 +82,10 @@ plt.plot(epoch_idx, losses)
 plt.show()
 
 model.eval()
-output = model(torch.tensor(test_dataX,dtype=torch.float))
+output = model(test_dataX)
 cnt = 0
 for i in range(len(output)):
     if model.correct(output[i], test_dataY[i]):
         cnt += 1
-print(f"Accuracy: {cnt}/{len(test_dataX)}  {(cnt/len(test_dataX)*100.0):2.3f}%")
+print(
+    f"Accuracy: {cnt}/{len(test_dataX)}  {(cnt/len(test_dataX)*100.0):2.3f}%")

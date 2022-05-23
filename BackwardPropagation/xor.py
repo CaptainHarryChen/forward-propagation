@@ -19,7 +19,7 @@ class XOR(nn.Module):
     def loss(self,a,Y):
         return F.binary_cross_entropy(a, Y)
 
-total_epochs = 250
+total_epochs = 500
 propagation_times = 10
 lr = 0.01
 

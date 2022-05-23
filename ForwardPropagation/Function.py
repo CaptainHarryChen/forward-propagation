@@ -28,4 +28,8 @@ def cross_entropy(a,y):
 
 def average(a):
     return FTensor(np.average(a.value),np.average(a.delta))
-    
+
+def softmax(x, axis=-1):
+	e_x = exp(x)
+	probs = e_x / np.sum(e_x.value, axis=axis, keepdims=True)
+	return probs
