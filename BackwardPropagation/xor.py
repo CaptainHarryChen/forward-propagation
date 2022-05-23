@@ -69,4 +69,4 @@ if __name__ == "__main__":
         predict = 1 if y_out > 0.5 else 0
         if predict == y_data:
             cnt += 1
-    print(f"Accuracy: {cnt}/16  {(cnt/16.0):2.3f}%")
+    print(f"Accuracy: {cnt}/16  {(cnt/16.0)*100.0:2.3f}%")
