@@ -22,7 +22,7 @@ class SimpleFunction(ForwardModel.Model):
 
 
 total_epochs = 100
-propagation_times = 5
+propagation_times = 1
 lr = 0.001
 
 if __name__ == "__main__":
@@ -35,6 +35,7 @@ if __name__ == "__main__":
 
     model.train()
     for epoch in range(total_epochs):
+        model.zero_grads()
         loss = model()
         # print(loss)
         losses[epoch] = loss

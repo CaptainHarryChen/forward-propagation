@@ -23,8 +23,8 @@ class XOR(ForwardModel.Model):
         return F.cross_entropy(self.forward(x), Y).flatten()
 
 
-total_epochs = 250
-propagation_times = 10
+total_epochs = 500
+propagation_times = 1
 lr = 0.01
 
 if __name__ == "__main__":
@@ -45,6 +45,7 @@ if __name__ == "__main__":
 
     model.train()
     for epoch in range(total_epochs):
+        model.zero_grads()
         loss = model(dataX, dataY)
         # print(loss)
         losses[epoch] = loss
