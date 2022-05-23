@@ -6,14 +6,14 @@ class FTensor:
     def __init__(self, value, delta=None):
         if isinstance(value, FTensor):
             self.value = np.copy(value.value)
-            self.delta = np.copy(value.delta)  
+            self.delta = np.copy(value.delta)
         else:
             self.value = np.array(value)
             if delta is not None:
                 self.delta = np.array(delta)
-                assert(self.value.shape==self.delta.shape)
+                assert(self.value.shape == self.delta.shape)
             else:
-                self.delta = np.random.standard_normal(self.value.shape)  
+                self.delta = np.random.standard_normal(self.value.shape)
         self.shape = self.value.shape
         self.size = self.value.size
 
@@ -85,3 +85,13 @@ class FTensor:
 
     def flatten(self):
         return FTensor(self.value.flatten(), self.delta.flatten())
+
+    def expand_dims(x, axis=-1):
+        if isinstance(x, FTensor):
+            return FTensor(np.expand_dims(x.value, axis), np.expand_dims(x.delta, axis))
+        return np.expand_dims(x, axis)
+    
+    def squeeze(x, axis=-1):
+        if isinstance(x, FTensor):
+            return FTensor(np.squeeze(x.value, axis), np.squeeze(x.delta, axis))
+        return np.squeeze(x, axis)
