@@ -1,6 +1,7 @@
 import torch
 import random
 import time
+from tqdm import tqdm
 import numpy as np
 import torch.nn as nn
 import torch.nn.functional as F
@@ -40,7 +41,7 @@ propagation_times = 10
 lr = 0.01
 mini_batch_size = 32
 
-model = MNIST_model(hidden1=128, hidden2=128)
+model = MNIST_model(hidden1=32, hidden2=32)
 
 epoch_idx = np.arange(1, total_epochs+1)
 losses = np.zeros(total_epochs, dtype=np.float32)
@@ -55,7 +56,7 @@ for epoch in range(total_epochs):
     sum_loss = 0.0
     n = len(train_dataX)
     opti.zero_grad()
-    for j in range(0, n, mini_batch_size):
+    for j in tqdm(range(0, n, mini_batch_size)):
         dataX = torch.tensor(
             train_dataX[idx[j:j + mini_batch_size]], dtype=torch.float)
         dataY = torch.tensor(
