@@ -2,6 +2,7 @@ import random
 import time
 import numpy as np
 import matplotlib.pyplot as plt
+from tqdm import tqdm
 import ForwardModel
 import Layer
 import Function as F
@@ -42,7 +43,7 @@ propagation_times = 1
 lr = 0.01
 mini_batch_size = 32
 
-model = MNIST_model(hidden1=128, hidden2=128)
+model = MNIST_model(hidden1=32, hidden2=32)
 
 epoch_idx = np.arange(1, total_epochs+1)
 losses = np.zeros(total_epochs, dtype=np.float32)
@@ -58,7 +59,7 @@ for epoch in range(total_epochs):
     n = len(train_dataX)
 
     model.zero_grads()
-    for j in range(0, n, mini_batch_size):
+    for j in tqdm(range(0, n, mini_batch_size)):
         dataX = train_dataX[idx[j:j + mini_batch_size]]
         dataY = train_dataY[idx[j:j + mini_batch_size]]
         loss = model(dataX, dataY)
