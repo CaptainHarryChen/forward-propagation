@@ -9,8 +9,8 @@ from Optimizer import SGD, Adam
 
 
 class XOR(ForwardModel.Model):
-    def __init__(self, hidden1):
-        super().__init__()
+    def __init__(self, hidden1, propagation_times):
+        super().__init__(propagation_times)
         self.linear1 = Layer.Linear(4, hidden1, self, "linear1")
         self.linear2 = Layer.Linear(hidden1, 1, self, "linear2")
 
@@ -24,7 +24,7 @@ class XOR(ForwardModel.Model):
 
 
 total_epochs = 500
-propagation_times = 1
+propagation_times = 10
 lr = 0.01
 
 if __name__ == "__main__":
@@ -39,7 +39,7 @@ if __name__ == "__main__":
     dataX = dataX.float()
     dataY = dataY.float()
 
-    model = XOR(hidden1=128)
+    model = XOR(hidden1=128,propagation_times=propagation_times)
 
     epoch_idx = torch.arange(1, total_epochs+1)
     losses = torch.zeros(total_epochs, dtype=torch.float32)
