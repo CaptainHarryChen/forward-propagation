@@ -1,24 +1,24 @@
-import numpy as np
+import torch
 
 
 class FTensor:
 
-    def __init__(self, value, delta=None):
+    def __init__(self, value, delta=None, dtype=torch.float32):
         if isinstance(value, FTensor):
-            self.value = np.copy(value.value)
-            self.delta = np.copy(value.delta)
+            self.value = value.value.clone()
+            self.delta = value.delta.clone()
         else:
-            self.value = np.array(value)
+            self.value = torch.as_tensor(value, dtype=dtype)
             if delta is not None:
-                self.delta = np.array(delta)
+                self.delta = torch.as_tensor(delta, dtype=dtype)
                 assert(self.value.shape == self.delta.shape)
             else:
-                self.delta = np.random.standard_normal(self.value.shape)
+                self.delta = torch.randn(self.value.shape)
         self.shape = self.value.shape
         self.size = self.value.size
 
     def reset(self):
-        self.delta = np.random.standard_normal(self.value.shape)
+        self.delta = torch.randn(self.value.shape)
 
     def __add__(self, B):
         if isinstance(B, FTensor):
@@ -65,12 +65,12 @@ class FTensor:
 
     def matmul(A, B):
         if isinstance(A, FTensor) and isinstance(B, FTensor):
-            return FTensor(np.matmul(A.value, B.value), np.matmul(A.value, B.delta)+np.matmul(A.delta, B.value))
+            return FTensor(torch.matmul(A.value, B.value), torch.matmul(A.value, B.delta)+torch.matmul(A.delta, B.value))
         if isinstance(A, FTensor):
-            return FTensor(np.matmul(A.value, B), np.matmul(A.delta, B))
+            return FTensor(torch.matmul(A.value, B), torch.matmul(A.delta, B))
         if isinstance(B, FTensor):
-            return FTensor(np.matmul(A, B.value), np.matmul(A, B.delta))
-        return np.matmul(A, B)
+            return FTensor(torch.matmul(A, B.value), torch.matmul(A, B.delta))
+        return torch.matmul(A, B)
 
     def __pow__(self, B):
         if B == 2:
@@ -88,10 +88,10 @@ class FTensor:
 
     def expand_dims(x, axis=-1):
         if isinstance(x, FTensor):
-            return FTensor(np.expand_dims(x.value, axis), np.expand_dims(x.delta, axis))
-        return np.expand_dims(x, axis)
+            return FTensor(torch.unsqueeze(x.value, axis), torch.unsqueeze(x.delta, axis))
+        return torch.unsqueeze(x, axis)
     
     def squeeze(x, axis=-1):
         if isinstance(x, FTensor):
-            return FTensor(np.squeeze(x.value, axis), np.squeeze(x.delta, axis))
-        return np.squeeze(x, axis)
+            return FTensor(torch.squeeze(x.value, axis), torch.squeeze(x.delta, axis))
+        return torch.squeeze(x, axis)

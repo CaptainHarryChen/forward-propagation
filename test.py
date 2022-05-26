@@ -1,11 +1,26 @@
 import time
-from concurrent.futures import ThreadPoolExecutor
+import numpy as np
+import torch
 
-def fun(x):
-    print(f"hahah{x}")
-    return x+1
+def numpyTest():
+    A = np.random.standard_normal([100,100,32,32])
+    B = np.random.standard_normal([100,100,32,32])
 
-with ThreadPoolExecutor(max_workers=2) as executor:
-    ans = executor.map(fun, [1,2,3,4])
-    for res in ans:
-        print(res)
+    t1 = time.time()
+    C = np.matmul(A,B)
+    print(f"Time used (numpy): {time.time()-t1}s")
+
+
+def torchTest():
+    A = torch.randn([100,100,32,32])
+    B = torch.randn([100,100,32,32])
+
+    t1 = time.time()
+    C = torch.matmul(A, B)
+    print(f"Time used (torch): {time.time()-t1}s")
+
+numpyTest()
+torchTest()
+
+numpyTest()
+torchTest()

@@ -1,5 +1,5 @@
+import torch
 import random
-import numpy as np
 import matplotlib.pyplot as plt
 import ForwardModel
 from ForwardTensor import FTensor
@@ -29,8 +29,8 @@ if __name__ == "__main__":
     x, y = 2.45, 1.23
     model = SimpleFunction(x, y)
 
-    epoch_idx = np.arange(1, total_epochs+1)
-    losses = np.zeros(total_epochs, dtype=np.float32)
+    epoch_idx = torch.arange(1, total_epochs+1)
+    losses = torch.zeros(total_epochs, dtype=torch.float32)
     opti = SGD(lr=lr)
 
     model.train()
