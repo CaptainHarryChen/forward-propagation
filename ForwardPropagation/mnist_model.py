@@ -12,8 +12,8 @@ import mnist_loader
 
 
 class MNIST_model(ForwardModel.Model):
-    def __init__(self, hidden1, hidden2):
-        super().__init__()
+    def __init__(self, hidden1, hidden2, propagation_times):
+        super().__init__(propagation_times)
         self.linear1 = Layer.Linear(784, hidden1, self, "linear1")
         self.linear2 = Layer.Linear(hidden1, hidden2, self, "linear2")
         self.linear3 = Layer.Linear(hidden2, 10, self, "linear3")
@@ -38,12 +38,12 @@ images, labels = mnist_loader.load_data(".\\MNIST", "t10k")
 test_dataX, test_dataY = mnist_loader.standardize(images, labels)
 
 
-total_epochs = 5
-propagation_times = 1
+total_epochs = 50
+propagation_times = 5
 lr = 0.01
-mini_batch_size = 32
+mini_batch_size = 128
 
-model = MNIST_model(hidden1=32, hidden2=32)
+model = MNIST_model(hidden1=32, hidden2=32, propagation_times=propagation_times)
 
 epoch_idx = torch.arange(1, total_epochs+1)
 losses = torch.zeros(total_epochs, dtype=torch.float32)
