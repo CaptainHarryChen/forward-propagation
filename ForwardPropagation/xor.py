@@ -24,7 +24,7 @@ class XOR(ForwardModel.Model):
 
 
 total_epochs = 500
-propagation_times = 10
+propagation_times = 100
 lr = 0.01
 
 if __name__ == "__main__":
@@ -59,6 +59,7 @@ if __name__ == "__main__":
     plt.title("Forward Propagation Loss")
     plt.xlabel("Epoch")
     plt.ylabel("Loss")
+    plt.ylim(bottom=-0.05)
     plt.plot(epoch_idx, losses)
     plt.show()
 

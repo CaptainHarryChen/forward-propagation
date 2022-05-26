@@ -25,35 +25,20 @@ propagation_times = 5
 lr = 0.001
 
 if __name__ == "__main__":
-    # debug_test()
+    debug_test()
 
-    x, y = 2.45, 1.23
-    print(f"x = {x}  y = {y}")
-    print(f"f(x,y) = {forward(x,y)}")
+    fig = plt.figure()
+    ax = fig.add_subplot(projection="3d")
 
-    epoch_idx = np.arange(1, total_epochs+1)
-    losses = np.zeros(total_epochs, dtype=np.float32)
+    x = np.arange(-10,10,0.5)
+    y = np.arange(-10,10,0.5)
+    x,y = np.meshgrid(x, y)
+    z = forward(x,y)
 
-    for epoch in range(total_epochs):
-        delta = np.zeros(2)
-        for prop_time in range(propagation_times):
-            v = FTensor([x, y])
-            res = forward(v[0], v[1])
-            delta += v.delta * res.delta
-            # print(res.delta, end=" ")
-        # print(f"\n{delta}")
-        delta /= propagation_times
-        # print(delta)
-        x -= delta[0] * lr
-        y -= delta[1] * lr
-        loss = forward(x, y)
-        losses[epoch] = loss
-        print(f"Epoch {epoch} :")
-        print(f"x = {x}  y = {y}")
-        print(f"f(x,y) = {loss}")
+    ax.plot_surface(x,y,z)
+    ax.set_xlabel("X Label")
+    ax.set_ylabel("Y Label")
+    ax.set_zlabel("Z Label")
 
-    plt.title("Forward Propagation Loss")
-    plt.xlabel("Epoch id")
-    plt.ylabel("Loss")
-    plt.plot(epoch_idx, losses)
+    ax.set_title("3D surface plot")
     plt.show()

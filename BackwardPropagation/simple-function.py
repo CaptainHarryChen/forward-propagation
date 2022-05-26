@@ -43,7 +43,7 @@ if __name__ == "__main__":
     res = model()
     print(f"Test: {res[0]}")
 
-    plt.title("Forward Propagation Loss")
+    plt.title("Backward Propagation Loss")
     plt.xlabel("Epoch")
     plt.ylabel("Loss")
     plt.plot(epoch_idx, losses)

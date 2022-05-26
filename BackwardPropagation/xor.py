@@ -55,9 +55,10 @@ if __name__ == "__main__":
         # print(f"x = {x}  y = {y}")
         print(f"loss = {loss}")
 
-    plt.title("Forward Propagation Loss")
+    plt.title("Backward Propagation Loss")
     plt.xlabel("Epoch")
     plt.ylabel("Loss")
+    plt.ylim(bottom=-0.05)
     plt.plot(epoch_idx, losses)
     plt.show()
 
