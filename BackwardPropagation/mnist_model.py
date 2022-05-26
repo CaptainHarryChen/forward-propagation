@@ -39,7 +39,7 @@ test_dataX, test_dataY = mnist_loader.standardize(images, labels)
 total_epochs = 50
 propagation_times = 10
 lr = 0.01
-mini_batch_size = 32
+mini_batch_size = 2048
 
 model = MNIST_model(hidden1=32, hidden2=32)
 
@@ -76,9 +76,10 @@ for epoch in range(total_epochs):
 time_ed = time.time()
 print(f"Time used: {(time_ed-time_st):2.3f}s")
 
-plt.title("Forward Propagation Loss")
+plt.title("Backward Propagation Loss")
 plt.xlabel("Epoch")
 plt.ylabel("Loss")
+plt.ylim(bottom=-0.02,top=0.4)
 plt.plot(epoch_idx, losses)
 plt.show()
 
