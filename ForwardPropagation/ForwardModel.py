@@ -1,4 +1,4 @@
-import numpy as np
+import torch
 import Function as F
 from ForwardTensor import FTensor
 
@@ -14,11 +14,11 @@ class Model():
     def register_param(self, param: FTensor, name: str):
         self.param[name] = param
         self.variables[name] = param.value
-        self.grads[name] = np.zeros(param.delta.shape)
+        self.grads[name] = torch.zeros(param.delta.shape)
 
     def zero_grads(self):
         for key in self.grads.keys():
-            self.grads[key].fill(0)
+            self.grads[key].fill_(0)
 
     def reset_param(self):
         for key in self.param.keys():

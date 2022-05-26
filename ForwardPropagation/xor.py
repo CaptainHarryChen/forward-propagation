@@ -1,5 +1,5 @@
 import random
-import numpy as np
+import torch
 import matplotlib.pyplot as plt
 import ForwardModel
 import Layer
@@ -28,19 +28,21 @@ propagation_times = 1
 lr = 0.01
 
 if __name__ == "__main__":
-    dataX = np.zeros([16, 4], dtype=np.int16)
-    dataY = np.zeros([16, 1], dtype=np.int16)
+    dataX = torch.zeros([16, 4], dtype=torch.int16)
+    dataY = torch.zeros([16, 1], dtype=torch.int16)
     for i in range(16):
         x = i
         for j in range(4):
             dataX[i][j] = x & 1
             dataY[i][0] ^= x & 1
             x >>= 1
+    dataX = dataX.float()
+    dataY = dataY.float()
 
     model = XOR(hidden1=128)
 
-    epoch_idx = np.arange(1, total_epochs+1)
-    losses = np.zeros(total_epochs, dtype=np.float32)
+    epoch_idx = torch.arange(1, total_epochs+1)
+    losses = torch.zeros(total_epochs, dtype=torch.float32)
     opti = Adam(lr=lr)
 
     model.train()
@@ -64,7 +66,7 @@ if __name__ == "__main__":
     output = model(dataX)
     # print(output)
     cnt = 0
-    for y_out, y_data in zip(output.flat, dataY.flat):
+    for y_out, y_data in zip(output.flatten(), dataY.flatten()):
         predict = 1 if y_out > 0.5 else 0
         if predict == y_data:
             cnt += 1

@@ -1,6 +1,6 @@
 import random
 import time
-import numpy as np
+import torch
 import matplotlib.pyplot as plt
 from tqdm import tqdm
 import ForwardModel
@@ -29,7 +29,7 @@ class MNIST_model(ForwardModel.Model):
         return F.cross_entropy(self.forward(x), Y)
 
     def correct(self, a, Y):
-        return Y[np.argmax(a)] == 1
+        return Y[torch.argmax(a)] == 1
 
 
 images, labels = mnist_loader.load_data(".\\MNIST", "train")
@@ -45,16 +45,15 @@ mini_batch_size = 32
 
 model = MNIST_model(hidden1=32, hidden2=32)
 
-epoch_idx = np.arange(1, total_epochs+1)
-losses = np.zeros(total_epochs, dtype=np.float32)
+epoch_idx = torch.arange(1, total_epochs+1)
+losses = torch.zeros(total_epochs, dtype=torch.float32)
 opti = Adam(lr=lr)
 
 time_st = time.time()
 
 model.train()
 for epoch in range(total_epochs):
-    idx = np.arange(len(train_dataX), dtype=np.int32)
-    np.random.shuffle(idx)
+    idx = torch.randperm(len(train_dataX))
     sum_loss = 0.0
     n = len(train_dataX)
 

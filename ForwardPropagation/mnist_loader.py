@@ -1,5 +1,6 @@
 import os
 import struct
+import torch
 import numpy as np
 
 
@@ -35,5 +36,6 @@ def standardize(images, labels):
         Y = np.array([int(j == labels[i]) for j in range(10)])
         dataX.append(X)
         dataY.append(Y)
-    dataX, dataY = np.array(dataX), np.array(dataY)
+    dataX = torch.tensor(np.array(dataX), dtype=torch.float32)
+    dataY = torch.tensor(np.array(dataY), dtype=torch.float32)
     return dataX, dataY
